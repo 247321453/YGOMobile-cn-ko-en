@@ -110,9 +110,7 @@ public class App extends GameApplication {
     @Override
     public void OnGameReady(Activity activity) {
         //初始化音效
-        if (AppsSettings.get().isSoundEffect()) {
-            initSoundEffectPool();
-        }
+        setSoundEffectPool(AppsSettings.get().isSoundEffect());
     }
 
     @Override

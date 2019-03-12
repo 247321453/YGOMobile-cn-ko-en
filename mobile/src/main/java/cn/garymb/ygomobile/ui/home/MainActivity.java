@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.IOException;
@@ -38,36 +39,14 @@ public class MainActivity extends HomeActivity {
     private ImageUpdater mImageUpdater;
     private boolean enableStart;
     ResCheckTask mResCheckTask;
-    private final String[] PERMISSIONS = {
-//            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.SYSTEM_ALERT_WINDOW,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-    };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         YGOStarter.onCreated(this);
         mImageUpdater = new ImageUpdater(this);
-        //动态权限
-//        ActivityCompat.requestPermissions(this, PERMISSIONS, 0);
         //资源复制
         checkRes();
-    }
-
-    @SuppressLint({"StringFormatMatches", "StringFormatInvalid"})
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        for(int i=0;i<permissions.length;i++){
-//            if(grantResults[i] == PackageManager.PERMISSION_DENIED){
-//                showToast(getString(R.string.tip_no_permission,permissions[i]));
-//                break;
-//            }
-//        }
-
     }
 
     private void checkRes() {

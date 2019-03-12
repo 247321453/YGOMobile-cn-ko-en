@@ -9,8 +9,8 @@ import cn.garymb.ygomobile.ui.preference.fragments.AboutFragment;
 
 public class AboutActivity extends BaseActivity {
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         Toolbar toolbar = $(R.id.toolbar);
         setSupportActionBar(toolbar);

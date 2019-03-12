@@ -9,9 +9,10 @@ import cn.garymb.ygomobile.ui.activities.BaseActivity;
 import cn.garymb.ygomobile.ui.preference.fragments.SettingFragment;
 
 public class SettingsActivity extends BaseActivity {
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         Toolbar toolbar = $(R.id.toolbar);
         setSupportActionBar(toolbar);

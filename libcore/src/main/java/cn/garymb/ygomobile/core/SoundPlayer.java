@@ -28,6 +28,11 @@ public class SoundPlayer {
         loadSounds();
     }
 
+    public void Clear() {
+        mInitSoundEffectPool = false;
+        mSoundIdMap.clear();
+    }
+
     public void playSoundEffect(String path) {
         Integer id = mSoundIdMap.get(path);
         if (id != null) {

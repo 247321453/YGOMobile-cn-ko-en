@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import cn.garymb.ygomobile.AppsSettings;
+import cn.garymb.ygomobile.lite.BuildConfig;
 
 public class FileLogUtil {
 
@@ -36,7 +37,7 @@ public class FileLogUtil {
         fw = new FileWriter(f, true);
 
         PrintWriter pw = new PrintWriter(fw);
-        if (writeNum==0)
+        if (writeNum == 0)
             pw.println();
         pw.println(message);
         writeNum++;
@@ -44,7 +45,6 @@ public class FileLogUtil {
         fw.flush();
         pw.close();
         fw.close();
-
     }
 
     public static String read() throws IOException {

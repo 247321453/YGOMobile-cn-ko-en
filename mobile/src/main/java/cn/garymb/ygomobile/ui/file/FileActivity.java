@@ -34,10 +34,10 @@ public class FileActivity extends BaseActivity implements AdapterView.OnItemClic
     private boolean selectFile;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
         setResult(Activity.RESULT_CANCELED);
         if (doIntent(getIntent())) {
-            super.onCreate(savedInstanceState);
+            super.doOnCreate(savedInstanceState);
             setContentView(R.layout.activity_filebrowser);
             Toolbar toolbar = $(R.id.toolbar);
             setSupportActionBar(toolbar);

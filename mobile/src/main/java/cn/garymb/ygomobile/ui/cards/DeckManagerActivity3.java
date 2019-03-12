@@ -3,6 +3,7 @@ package cn.garymb.ygomobile.ui.cards;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.OnItemDragListener;
@@ -41,8 +42,8 @@ public class DeckManagerActivity3 extends BaseActivity implements OnItemDragList
     private File mYdkFile;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         setContentView(R.layout.activity_deck_cards3);
         Toolbar toolbar = $(R.id.toolbar);
         setSupportActionBar(toolbar);

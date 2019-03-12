@@ -87,8 +87,8 @@ class DeckManagerActivityImpl2 extends BaseActivity implements CardLoader.CallBa
     private String mDeckMd5;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         setContentView(R.layout.activity_deck_cards2);
         Toolbar toolbar = $(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -359,12 +359,12 @@ class DeckManagerActivityImpl2 extends BaseActivity implements CardLoader.CallBa
         mYdkFile = file;
         if (file != null && file.exists()) {
             String name = IOUtils.tirmName(file.getName(), YDK_FILE_EX);
-            setActionBarSubTitle(name);
+            setActivitySubTitle(name);
             if (!noSaveLast) {
                 mSettings.setLastDeck(name);
             }
         } else {
-            setActionBarSubTitle(getString(R.string.noname));
+            setActivitySubTitle(getString(R.string.noname));
         }
     }
 

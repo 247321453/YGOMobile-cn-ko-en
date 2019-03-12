@@ -1,115 +1,174 @@
 package cn.garymb.ygomobile.ui.activities;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.PersistableBundle;
+import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.annotation.StringRes;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.garymb.ygomobile.lite.R;
 import cn.garymb.ygomobile.utils.FileLogUtil;
 
 
 public class BaseActivity extends AppCompatActivity {
-    protected final static int REQUEST_PERMISSIONS = 0x1000 + 1;
-    private boolean mExitAnim = true;
-    private boolean mEnterAnim = true;
 
-    private Toast mToast;
-
-    protected String[] getPermissions() {
-        return PERMISSIONS;
+    //region 动态权限
+    @Override
+    public final void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
     }
 
-    protected final String[] PERMISSIONS = {
-//            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.READ_PHONE_STATE,
-//            Manifest.permission.SYSTEM_ALERT_WINDOW,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-    };
-
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected final void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        doOnCreate(savedInstanceState);
+        checkRequestPermissions();
     }
 
-    protected void setupActionBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
+    /**
+     * 初始化view
+     */
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+
+    }
+
+    private void checkRequestPermissions() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.M) {
+            initData(false);
+            return;
         }
+        String[] permissions = getRequestPermissions();
+        if (permissions != null) {
+            List<String> pers = new ArrayList<>();
+            for (String permission : permissions) {
+                if (PackageManager.PERMISSION_GRANTED != ActivityCompat.checkSelfPermission(this, permission)) {
+                    pers.add(permission);
+                }
+            }
+            if (pers.size() > 0) {
+                String[] ps = new String[pers.size()];
+                ActivityCompat.requestPermissions(this, pers.toArray(ps), 0);
+                return;
+            }
+        }
+        initData(false);
+    }
+
+    protected String[] getRequestPermissions() {
+        return null;
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        try {
-            FileLogUtil.writeAndTime("开始显示");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (Build.VERSION.SDK_INT<Build.VERSION_CODES.M|| !startPermissionsActivity()){
-            try {
-                FileLogUtil.writeAndTime("不申请权限");
-            } catch (IOException e) {
-                e.printStackTrace();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        for (int rs : grantResults) {
+            if (rs == PackageManager.PERMISSION_DENIED) {
+                initData(true);
+                return;
             }
-            onActivityResult(REQUEST_PERMISSIONS,PermissionsActivity.PERMISSIONS_GRANTED,null);
+        }
+        initData(false);
+    }
+
+    /**
+     * 初始化数据
+     *
+     * @param denied 是否禁止某个权限
+     */
+    protected void initData(boolean denied) {
+
+    }
+    //endregion
+
+    //region 启动/退出动画
+    @Override
+    public void finish() {
+        super.finish();
+        initExitAnim();
+    }
+
+    @Override
+    public void startActivity(Intent intent) {
+        super.startActivity(intent);
+        initEnterAnim();
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+        initEnterAnim();
+    }
+
+    private void initEnterAnim() {
+        if (isHasEnterAnim()) {
+            overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         }
     }
 
-    public Activity getActivity() {
+    private void initExitAnim() {
+        if (isHasEnterAnim()) {
+            overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
+        }
+    }
+
+    protected boolean isHasExitAnim() {
+        return true;
+    }
+
+    protected boolean isHasEnterAnim() {
+        return true;
+    }
+    //endregion
+
+    public BaseActivity getActivity() {
         return this;
     }
 
-    public Context getContext() {
+    public BaseActivity getContext() {
         return getActivity();
     }
 
-    protected <T extends View> T $(int id) {
+    protected <T extends View> T $(@IdRes int id) {
         return (T) findViewById(id);
     }
 
-    public void setEnterAnimEnable(boolean disableEnterAnim) {
-        this.mEnterAnim = disableEnterAnim;
+    protected <T extends CheckBox> T bindCheck(int id, CompoundButton.OnCheckedChangeListener clickListener) {
+        T t = findViewById(id);
+        if (t != null && clickListener != null) {
+            t.setOnCheckedChangeListener(clickListener);
+        }
+        return t;
     }
 
-    public void setExitAnimEnable(boolean disableExitAnim) {
-        this.mExitAnim = disableExitAnim;
-    }
-
-    protected int getActivityHeight() {
-        Rect rect = new Rect();
-        getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-        return rect.height();
-    }
-
+    //region toolbar
     public void enableBackHome() {
+        setupActionBar();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-//            View view = $(R.id.btn_back);
-//            if (view != null) {
-//                view.setVisibility(View.VISIBLE);
-//                view.setOnClickListener((v) -> {
-//                    onBackHome();
-//                });
-//            }
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
@@ -118,33 +177,35 @@ public class BaseActivity extends AppCompatActivity {
         finish();
     }
 
-    protected int getStatusBarHeight() {
-        Rect rect = new Rect();
-        getWindow().getDecorView().getWindowVisibleDisplayFrame(rect);
-        return rect.top;
+    protected @IdRes int getToolbarId() {
+        return R.id.toolbar;
     }
 
-    protected void hideSystemNavBar() {
-        if (Build.VERSION.SDK_INT >= 19) {
-//            final WindowManager.LayoutParams params = getWindow().getAttributes();
-//            params.systemUiVisibility |=
-//                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-//                            View.SYSTEM_UI_FLAG_IMMERSIVE |
-//                            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-//                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-//            getWindow().setAttributes(params);
+    protected void hideToolBar() {
+        Toolbar toolbar = $(getToolbarId());
+        if (toolbar != null) {
+            toolbar.setVisibility(View.GONE);
         }
     }
 
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        if (hasFocus) {
-//            hideSystemNavBar();
-//        }
-//        super.onWindowFocusChanged(hasFocus);
-//    }
+    private boolean setupToolbar = false;
 
-    public void setActionBarTitle(String title) {
+    protected void setupActionBar() {
+        if (setupToolbar) {
+            return;
+        }
+        setupToolbar = true;
+        Toolbar toolbar = $(getToolbarId());
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+    }
+
+    public void setActivityTitle(@StringRes int title) {
+        setActivityTitle(getString(title));
+    }
+
+    public void setActivityTitle(String title) {
         if (TextUtils.isEmpty(title)) {
             return;
         }
@@ -154,7 +215,7 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void setActionBarSubTitle(String title) {
+    public void setActivitySubTitle(String title) {
         if (TextUtils.isEmpty(title)) {
             return;
         }
@@ -165,60 +226,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    public void startActivity(Intent intent) {
-        super.startActivity(intent);
-        if (mEnterAnim) {
-            setAnim();
-        }
-    }
-
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode) {
-        super.startActivityForResult(intent, requestCode);
-        if (mEnterAnim) {
-            setAnim();
-        }
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        if (mExitAnim) {
-            overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
-        }
-    }
-
-    @SuppressLint("RestrictedApi")
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    @Override
-    public void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options) {
-        super.startActivityForResult(intent, requestCode, options);
-        if (mEnterAnim) {
-            setAnim();
-        }
-    }
-
-    private void setAnim() {
-        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
-    }
-
-    public void setActionBarTitle(int rid) {
-        setActionBarTitle(getString(rid));
-    }
-
-    protected boolean startPermissionsActivity() {
-        String[] PERMISSIONS = getPermissions();
-        if (PERMISSIONS == null || PERMISSIONS.length == 0)
-            return false;
-        try {
-            FileLogUtil.writeAndTime("申请权限");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return PermissionsActivity.startActivityForResult(this, REQUEST_PERMISSIONS, PERMISSIONS);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackHome();
@@ -226,21 +233,10 @@ public class BaseActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    //endregion
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        try {
-            FileLogUtil.writeAndTime("resultcode值"+resultCode);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // 拒绝时, 关闭页面, 缺少主要权限, 无法运行
-        if (requestCode == REQUEST_PERMISSIONS && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
-            showToast("喵不给我权限让我怎么运行？！");
-            finish();
-        }
-    }
+    //region toast
+    private Toast mToast;
 
     @SuppressLint("ShowToast")
     private Toast makeToast() {
@@ -284,4 +280,5 @@ public class BaseActivity extends AppCompatActivity {
         toast.setDuration(duration);
         toast.show();
     }
+    //endregion
 }

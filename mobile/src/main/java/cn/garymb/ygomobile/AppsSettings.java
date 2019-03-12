@@ -3,6 +3,7 @@ package cn.garymb.ygomobile;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -46,7 +47,6 @@ public class AppsSettings {
     private float mScreenHeight, mScreenWidth, mDensity;
 
 
-
     private AppsSettings(Context context) {
         this.context = context;
         mSharedPreferences = PreferenceFragmentPlus.SharedPreferencesPlus.create(context, context.getPackageName() + ".settings");
@@ -79,21 +79,21 @@ public class AppsSettings {
         mScreenWidth = context.getResources().getDisplayMetrics().widthPixels;
 
         if (isImmerSiveMode() && context instanceof Activity) {
-            DisplayMetrics dm = SystemUtils.getHasVirtualDisplayMetrics((Activity) context);
+            Point dm = SystemUtils.getHasVirtualScreenSize((Activity) context);
             if (dm != null) {
 
-                int height = Math.max(dm.widthPixels, dm.heightPixels);
-                Log.e("YGOMobileLog","类地址"+System.identityHashCode(this));
+                int height = Math.max(dm.x, dm.y);
+                Log.e("YGOMobileLog", "类地址" + System.identityHashCode(this));
 
-                int notchHeight=getNotchHeight();
+                int notchHeight = getNotchHeight();
 
                 try {
                     FileLogUtil.writeAndTime("是否沉浸:  " + isImmerSiveMode());
                     FileLogUtil.writeAndTime("原始长:  " + mScreenHeight);
                     FileLogUtil.writeAndTime("原始宽:  " + mScreenWidth);
-                    FileLogUtil.writeAndTime("界面长:  " + dm.heightPixels);
-                    FileLogUtil.writeAndTime("界面宽:  " + dm.widthPixels);
-                    FileLogUtil.writeAndTime("刘海长:  "+notchHeight);
+                    FileLogUtil.writeAndTime("界面长:  " + dm.y);
+                    FileLogUtil.writeAndTime("界面宽:  " + dm.x);
+                    FileLogUtil.writeAndTime("刘海长:  " + notchHeight);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

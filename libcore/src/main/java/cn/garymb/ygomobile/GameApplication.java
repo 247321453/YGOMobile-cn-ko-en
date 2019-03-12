@@ -75,9 +75,13 @@ public abstract class GameApplication extends Application implements IrrlichtBri
         return mSoundPlayer.isInitSoundEffectPool();
     }
 
-    public void initSoundEffectPool() {
+    public void setSoundEffectPool(boolean hasSound) {
         //init有防止重复初始化
-        mSoundPlayer.Init();
+        if(hasSound) {
+            mSoundPlayer.Init();
+        }else{
+            mSoundPlayer.Clear();
+        }
     }
 
     @Override

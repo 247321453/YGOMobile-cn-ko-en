@@ -180,10 +180,14 @@ public abstract class HomeActivity extends BaseActivity implements NavigationVie
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected boolean isHasExitAnim() {
+        return false;
+    }
+
+    @Override
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        setExitAnimEnable(false);
         mServerList = $(R.id.list_server);
         mServerListAdapter = new ServerListAdapter(this);
         //server list

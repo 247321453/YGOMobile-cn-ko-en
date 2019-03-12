@@ -16,8 +16,8 @@ public class FileLogActivity extends BaseActivity {
     private TextView tv_log;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         setContentView(R.layout.file_log_activity);
 
         Toolbar toolbar = findViewById(R.id.toolbar);

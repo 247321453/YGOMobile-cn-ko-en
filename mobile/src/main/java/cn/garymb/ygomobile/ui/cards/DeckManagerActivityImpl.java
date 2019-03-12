@@ -4,15 +4,10 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.util.LruCache;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerViewItemListener;
@@ -90,8 +85,8 @@ class DeckManagerActivityImpl extends BaseCardsAcitivity implements RecyclerView
     private DialogPlus mDialog;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         mDeckSpinner = $(R.id.toolbar_list);
         mDeckSpinner.setPopupBackgroundResource(R.color.colorNavy);
         mLimitSpinner = $(R.id.sp_limit_list);
@@ -264,12 +259,12 @@ class DeckManagerActivityImpl extends BaseCardsAcitivity implements RecyclerView
         mYdkFile = file;
         if (file != null && file.exists()) {
             String name = IOUtils.tirmName(file.getName(), Constants.YDK_FILE_EX);
-            setActionBarSubTitle(name);
+            setActivitySubTitle(name);
             if (!noSaveLast) {
                 mSettings.setLastDeck(name);
             }
         } else {
-            setActionBarSubTitle(getString(R.string.noname));
+            setActivitySubTitle(getString(R.string.noname));
         }
     }
 

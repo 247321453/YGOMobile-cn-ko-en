@@ -3,6 +3,7 @@ package cn.garymb.ygomobile.ui.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 
@@ -21,8 +22,8 @@ public class PhotoViewActivity extends BaseActivity {
     private ImageLoader mImageLoader;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         setContentView(R.layout.activity_photo);
         final Toolbar toolbar = $(R.id.toolbar);
         setSupportActionBar(toolbar);

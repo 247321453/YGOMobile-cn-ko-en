@@ -16,8 +16,8 @@ public class WebActivity extends BaseActivity {
     private String mTitle;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         setContentView(R.layout.activity_webbrowser);
         final Toolbar toolbar = $(R.id.toolbar);
         setSupportActionBar(toolbar);

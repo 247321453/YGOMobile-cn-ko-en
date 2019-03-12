@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.util.DisplayMetrics;
 import android.view.Display;
 
@@ -34,19 +35,18 @@ public class SystemUtils {
         return 0;
     }
 
-    public static DisplayMetrics getHasVirtualDisplayMetrics(Activity context) {
-        int dpi = 0;
-        Display display = context.getWindowManager().getDefaultDisplay();
-        DisplayMetrics dm = new DisplayMetrics();
+    public static Point getHasVirtualScreenSize(Activity context) {
+        Point size = new Point();
         Class<?> c;
         try {
-            c = Class.forName("android.view.Display");
-            Method method = c.getMethod("getRealMetrics", DisplayMetrics.class);
-            method.invoke(display, dm);
-            dpi = dm.heightPixels;
-        } catch (Exception e) {
-            e.printStackTrace();
+            Display display = context.getWindowManager().getDefaultDisplay();
+            DisplayMetrics dm = new DisplayMetrics();
+            display.getRealMetrics(dm);
+            size.x = dm.widthPixels;
+            size.y = dm.heightPixels;
+        } catch (Throwable e) {
+            context.getWindowManager().getDefaultDisplay().getRealSize(size);
         }
-        return dm;
+        return size;
     }
 }

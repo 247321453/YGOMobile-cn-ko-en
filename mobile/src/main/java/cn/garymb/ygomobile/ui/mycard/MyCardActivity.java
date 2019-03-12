@@ -52,8 +52,8 @@ public class MyCardActivity extends BaseActivity implements MyCard.MyCardListene
     private ValueCallback<Uri[]> mUploadCallbackAboveL;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         setContentView(R.layout.activity_online_mycard);
         enableBackHome();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

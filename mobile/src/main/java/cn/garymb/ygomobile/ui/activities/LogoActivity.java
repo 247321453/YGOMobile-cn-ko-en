@@ -1,8 +1,10 @@
 package cn.garymb.ygomobile.ui.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import cn.garymb.ygomobile.AppsSettings;
@@ -15,8 +17,18 @@ public class LogoActivity extends BaseActivity {
     Runnable runnable;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected String[] getRequestPermissions() {
+        return new String[]{//
+                // Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.READ_PHONE_STATE,
+//            Manifest.permission.SYSTEM_ALERT_WINDOW,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,};
+    }
+
+    @Override
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         setContentView(R.layout.activity_logo);
         if (AppsSettings.get().isOnlyGame()) {
             YGOStarter.startGame(this, null);
@@ -31,12 +43,11 @@ public class LogoActivity extends BaseActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        // 拒绝时, 关闭页面, 缺少主要权限, 无法运行
-        if (requestCode == REQUEST_PERMISSIONS && resultCode == PermissionsActivity.PERMISSIONS_DENIED) {
+    protected void initData(boolean denied) {
+        super.initData(denied);
+        if(denied){
             finish();
-        } else {
+        }else{
             //   if (BuildConfig.DEBUG) {
             //       startActivity(new Intent(LogoActivity.this, MainActivity.class));
             //       finish();

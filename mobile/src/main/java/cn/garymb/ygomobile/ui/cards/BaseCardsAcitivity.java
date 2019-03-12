@@ -39,8 +39,8 @@ public abstract class BaseCardsAcitivity extends BaseActivity implements CardLoa
     protected LimitManager mLimitManager = DataManager.get().getLimitManager();
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         setContentView(R.layout.activity_deck_cards);
         AnimationShake2();
 

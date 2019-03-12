@@ -57,9 +57,10 @@ class CardSearchActivityImpl extends BaseActivity implements CardLoader.CallBack
     private boolean isFirstCardSearch=true;
     private String currentCardSearchMessage="";
 
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void doOnCreate(@Nullable Bundle savedInstanceState) {
+        super.doOnCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
         if(TextUtils.isEmpty(getIntent().getStringExtra(CardSearchAcitivity.SEARCH_MESSAGE))){

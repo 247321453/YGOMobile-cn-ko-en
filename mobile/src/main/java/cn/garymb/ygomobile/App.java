@@ -17,30 +17,16 @@ public class App extends GameApplication {
         //初始化异常工具类
         CrashHandler crashHandler =  CrashHandler.getInstance();
         crashHandler.init(getApplicationContext());
-        if (AppsSettings.get().isSoundEffect()) {
-            initSoundEffectPool();
-           setInitSoundEffectPool(true);
-        }
-
-//        QbSdk.initX5Environment(this, null);
-//        QbSdk.setCurrentID("");
     }
 
     @Override
     public NativeInitOptions getNativeInitOptions() {
-        NativeInitOptions options = AppsSettings.get().getNativeInitOptions();
-        return options;
+        return AppsSettings.get().getNativeInitOptions();
     }
 
     @Override
     public float getSmallerSize() {
         return AppsSettings.get().getSmallerSize();
-    }
-
-    @Override
-    public void attachGame(Activity activity) {
-        super.attachGame(activity);
-        AppsSettings.get().update(activity);
     }
 
     @Override
@@ -62,7 +48,6 @@ public class App extends GameApplication {
     public String getFontPath() {
         return AppsSettings.get().getFontPath();
     }
-
 
     @Override
     public void saveSetting(String key, String value) {
@@ -118,6 +103,25 @@ public class App extends GameApplication {
         Intent intent = new Intent();
         intent.putExtra("args", args);
         intent.setAction("RUN_WINDBOT");
-        getBaseContext().sendBroadcast(intent);
+        intent.setPackage(getPackageName());
+        this.sendBroadcast(intent);
+    }
+
+    @Override
+    public void OnGameReady(Activity activity) {
+        //初始化音效
+        if (AppsSettings.get().isSoundEffect()) {
+            initSoundEffectPool();
+        }
+    }
+
+    @Override
+    public void OnGameStarted(Activity activity) {
+
+    }
+
+    @Override
+    public void OnGameFullscreen(Activity activity) {
+        AppsSettings.get().updateScreenInfo(activity);
     }
 }

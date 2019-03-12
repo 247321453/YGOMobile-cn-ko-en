@@ -187,8 +187,7 @@ public class SettingFragment extends PreferenceFragmentPlus {
                     //如果打勾开启音效
                     if (checkBoxPreference.isChecked()) {
                         //如果未初始化音效
-                        if (App.get().isInitSoundEffectPool())
-                            App.get().initSoundEffectPool();
+                        App.get().initSoundEffectPool();
                     }
                 }
                 return true;

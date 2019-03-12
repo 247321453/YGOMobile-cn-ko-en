@@ -1,86 +1,65 @@
 package cn.garymb.ygomobile;
 
-import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.media.AudioManager;
-import android.media.SoundPool;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import cn.garymb.ygomobile.core.IrrlichtBridge;
+import cn.garymb.ygomobile.core.SoundPlayer;
 
 
-public abstract class GameApplication extends Application implements IrrlichtBridge.IrrlichtApplication {
-    private SoundPool mSoundEffectPool;
-    private Map<String, Integer> mSoundIdMap;
+public abstract class GameApplication extends Application implements IrrlichtBridge.IrrlichtApplication,IGameListener {
 
     private static GameApplication sGameApplication;
-    private boolean isInitSoundEffectPool=false;
+    private SoundPlayer mSoundPlayer;
+
+    protected SoundPlayer createSoundPlayer() {
+        return new SoundPlayer(this);
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mSoundPlayer = createSoundPlayer();
         sGameApplication = this;
-//        initSoundEffectPool();
     }
 
     public static GameApplication get() {
         return sGameApplication;
     }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-    }
+    ///onTerminate 内存少也不释放音效
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        mSoundEffectPool.release();
-    }
-
-    public boolean isInitSoundEffectPool() {
-        return isInitSoundEffectPool;
-    }
-
-    protected void setInitSoundEffectPool(boolean initSoundEffectPool) {
-        isInitSoundEffectPool = initSoundEffectPool;
-    }
-
-    @SuppressWarnings("deprecation")
-    public void initSoundEffectPool() {
-        mSoundEffectPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
-        AssetManager am = getAssets();
-        String[] sounds;
-        mSoundIdMap = new HashMap<String, Integer>();
-        try {
-            sounds = am.list("sound");
-            for (String sound : sounds) {
-                String path = "sound" + File.separator + sound;
-                mSoundIdMap
-                        .put(path, mSoundEffectPool.load(am.openFd(path), 1));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * 游戏启动参数
+     */
     public abstract NativeInitOptions getNativeInitOptions();
 
     public abstract float getSmallerSize();
 
+    /**
+     * 宽度比例
+     */
     public abstract float getXScale();
 
+    /**
+     * 高度比例
+     */
     public abstract float getYScale();
 
+    /**
+     * 锁定横屏方向
+     */
     public abstract boolean isLockSreenOrientation();
 
+    /**
+     * @deprecated
+     */
     public abstract boolean isSensorRefresh();
+
+    /***
+     * 隐藏底部导航栏
+     */
+    public abstract boolean isImmerSiveMode();
+
 
     /**
      * @deprecated
@@ -89,20 +68,22 @@ public abstract class GameApplication extends Application implements IrrlichtBri
         return true;
     }
 
-    public void attachGame(Activity activity) {
-
+    /**
+     * 初始化音效
+     */
+    public boolean isInitSoundEffectPool() {
+        return mSoundPlayer.isInitSoundEffectPool();
     }
 
-    /***
-     * 隐藏底部导航栏
-     */
-    public abstract boolean isImmerSiveMode();
+    public void initSoundEffectPool() {
+        //init有防止重复初始化
+        mSoundPlayer.Init();
+    }
 
     @Override
     public void playSoundEffect(String path) {
-        Integer id = mSoundIdMap.get(path);
-        if (id != null) {
-            mSoundEffectPool.play(id, 0.5f, 0.5f, 2, 0, 1.0f);
+        if(mSoundPlayer != null) {
+            mSoundPlayer.playSoundEffect(path);
         }
     }
 }

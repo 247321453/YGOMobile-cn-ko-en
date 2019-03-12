@@ -27,7 +27,7 @@ import android.widget.Toast;
 import java.nio.ByteBuffer;
 
 import cn.garymb.ygodata.YGOGameOptions;
-import cn.garymb.ygomobile.controller.NetworkController;
+import cn.garymb.ygomobile.core.NetworkController;
 import cn.garymb.ygomobile.core.IrrlichtBridge;
 import cn.garymb.ygomobile.lib.R;
 import cn.garymb.ygomobile.utils.FullScreenUtils;
@@ -100,6 +100,7 @@ public class YGOMobileActivity extends NativeActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        app().OnGameReady(this);
         Log.e("YGOStarter","跳转完成"+System.currentTimeMillis());
         mFullScreenUtils = new FullScreenUtils(this, app().isImmerSiveMode());
         mFullScreenUtils.fullscreen();
@@ -117,6 +118,7 @@ public class YGOMobileActivity extends NativeActivity implements
         sendBroadcast(new Intent(ACTION_START)
                 .putExtra(IrrlichtBridge.EXTRA_PID, android.os.Process.myPid())
                 .setPackage(getPackageName()));
+        app().OnGameStarted(this);
     }
 
     //电池管理
@@ -206,11 +208,10 @@ public class YGOMobileActivity extends NativeActivity implements
     }
 
     private void fullscreen() {
-
         //如果是沉浸模式
         if (app().isImmerSiveMode()) {
             mFullScreenUtils.fullscreen();
-            app().attachGame(this);
+            app().OnGameFullscreen(this);
         }
     }
 
@@ -376,6 +377,9 @@ public class YGOMobileActivity extends NativeActivity implements
 
     @Override
     public byte[] performTrick() {
+        /***
+         * 获取签名
+         */
         return SignUtils.getSignInfo(this);
     }
 

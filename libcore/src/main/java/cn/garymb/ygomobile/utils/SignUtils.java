@@ -1,5 +1,6 @@
 package cn.garymb.ygomobile.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -14,15 +15,18 @@ import java.util.Arrays;
 public class SignUtils {
     public static byte[] getSignInfo(Context context) {
         try {
+            @SuppressLint("PackageManagerGetSignatures")
             PackageInfo pi = context.getPackageManager().getPackageInfo(
                     context.getPackageName(), PackageManager.GET_SIGNATURES);
             Signature[] signs = pi.signatures;
             Signature sign = signs[0];
             return parseSignature(sign.toByteArray());
         } catch (Exception e) {
+            //ignore
         }
         return null;
     }
+
     private static byte[] parseSignature(byte[] signature) {
         try {
             CertificateFactory certFactory = CertificateFactory

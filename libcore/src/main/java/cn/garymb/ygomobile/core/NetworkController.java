@@ -1,4 +1,4 @@
-package cn.garymb.ygomobile.controller;
+package cn.garymb.ygomobile.core;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

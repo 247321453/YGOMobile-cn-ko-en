@@ -13,7 +13,6 @@ import org.json.JSONArray;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.Locale;
 
 import cn.garymb.ygomobile.ui.preference.PreferenceFragmentPlus;
 import cn.garymb.ygomobile.utils.FileLogUtil;
-import cn.garymb.ygomobile.utils.ScreenUtil;
 import cn.garymb.ygomobile.utils.SystemUtils;
 
 import static cn.garymb.ygomobile.Constants.CORE_EXPANSIONS;
@@ -54,7 +52,7 @@ public class AppsSettings {
         mSharedPreferences = PreferenceFragmentPlus.SharedPreferencesPlus.create(context, context.getPackageName() + ".settings");
         mSharedPreferences.setAutoSave(true);
         Log.e("YGOMobileLog", "初始化类地址:  "+ System.identityHashCode(this));
-        update(context);
+        updateScreenInfo(context);
     }
 
     public static void init(Context context) {
@@ -71,7 +69,11 @@ public class AppsSettings {
         return new File(getResourcePath(), CORE_SYSTEM_PATH);
     }
 
-    public void update(Context context) {
+    /**
+     * 更新屏幕信息
+     * @param context
+     */
+    public void updateScreenInfo(Context context) {
         mDensity = context.getResources().getDisplayMetrics().density;
         mScreenHeight = context.getResources().getDisplayMetrics().heightPixels;
         mScreenWidth = context.getResources().getDisplayMetrics().widthPixels;
